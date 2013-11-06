@@ -1,0 +1,9 @@
+CREATE TABLE "fields" ("id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,"project_id" INTEGER,"title" TEXT,"xcoord" INTEGER DEFAULT (null) ,"width" INTEGER,"helphtml" TEXT,"knowndata" TEXT, FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE)
+
+CREATE TABLE "images" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "project_id" INTEGER, "user_id" INTEGER, "file" TEXT, FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE, FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)
+
+CREATE TABLE "projects" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "title" TEXT, "recordsperimage" INTEGER, "firstycoord" INTEGER, "recordheight" INTEGER)
+
+CREATE TABLE "records" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,"image_id" INTEGER,"field_id" INTEGER,"value" TEXT, FOREIGN KEY(field_id) REFERENCES fields(id) ON DELETE CASCADE, FOREIGN KEY(image_id) REFERENCES images(id) ON DELETE CASCADE)
+
+CREATE TABLE "users" ("id" INTEGER PRIMARY KEY  NOT NULL ,"username" STRING DEFAULT (null) ,"password" STRING DEFAULT (null) ,"firstname" STRING DEFAULT (null) ,"lastname" STRING DEFAULT (null) ,"email" STRING DEFAULT (null) ,"indexedrecords" INTEGER)

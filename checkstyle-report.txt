@@ -1,0 +1,4 @@
+Starting audit...
+/Users/robert/Documents/workspace/Project1/src/controller/ImageController.java:55:5: Cyclomatic Complexity is 13 (max allowed is 10).
+/Users/robert/Documents/workspace/Project1/src/server/Server.java:41:9: Cyclomatic Complexity is 11 (max allowed is 10).
+Audit done.
