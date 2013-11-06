@@ -63,7 +63,7 @@ public class DataImporter {
 			IOException, 
 			SQLException{
 		
-		extractTo(args[1], Server.getFilesLocation());
+		extractTo(args[0], Server.getFilesLocation());
 		
 		importXML(findXMLFile(Server.getFilesLocation()));
 
