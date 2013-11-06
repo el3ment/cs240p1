@@ -63,7 +63,8 @@ public class DataImporter {
 			IOException, 
 			SQLException{
 		
-		extractTo(args[0], Server.getFilesLocation());
+		String filename = args.length > 0 ? args[0] : "./demo/record-indexer-demo.jar";
+		extractTo(filename, Server.getFilesLocation());
 		
 		importXML(findXMLFile(Server.getFilesLocation()));
 
