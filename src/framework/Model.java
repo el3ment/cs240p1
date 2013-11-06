@@ -172,9 +172,12 @@ public abstract class Model<ChildModelRecord extends ModelRecord> {
 		query += ") VALUES (" + valueQuery + ");";
 		
 		Database.getInstance().execute(query, false);
-		id = Database.getInstance()
-				.execute("SELECT last_insert_rowid() as id")
-				.getInt("id");
+		ResultSet rs = Database.getInstance()
+				.execute("SELECT last_insert_rowid() as id");
+		id = rs.getInt("id");
+		rs.close();
+		
+		//System.out.println("inserted : " + id);
 		child.id = id;
 		
 		return id;

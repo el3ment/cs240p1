@@ -38,7 +38,12 @@ public class Request {
 		public Integer numRecords;
 		
 		public String toString(){
-			return (isValid ? "TRUE" : "FALSE");
+			return (isValid
+					?	"TRUE\n"
+					 	+ firstName + "\n" 
+						+ lastName + "\n" 
+						+ numRecords 
+					: "FALSE");
 		}
 	}
 	
@@ -252,13 +257,15 @@ public class Request {
 		    
 			try {
 		        for (String line; (line = reader.readLine()) != null;) {
-		            response += line + "\n";
+		            response += line;
 		        }
 		    } finally {
 		        reader.close();
 		    }
+			
 		}catch(Exception e){
-			return "FAIL";
+			e.printStackTrace();
+			return "<error>FAILED " + e + "</error>";
 		}
 	    
 		return response;

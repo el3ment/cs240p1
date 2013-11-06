@@ -42,7 +42,7 @@ public class UserController extends Controller{
 		
 		this.requireValidNotEmpty(username);
 		this.requireValidNotEmpty(password);
-		
+		System.out.println("Requesting " + username);
 		UserModel.User foundUser = userModel.findFirstBy("username", username);
 		
 		if(foundUser != null && foundUser.password.equals(password)){

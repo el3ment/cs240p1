@@ -23,7 +23,7 @@ public class Server {
     }
 	
     public static void main(String[] args) throws Exception {
-    	int port = args.length > 1 ? Integer.parseInt(args[1]) : 39640;
+    	int port = args.length > 0 ? Integer.parseInt(args[0]) : 39640;
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/", new MyHandler());
         server.setExecutor(null); // creates a default executor

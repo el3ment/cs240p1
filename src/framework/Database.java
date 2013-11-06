@@ -62,12 +62,12 @@ public class Database {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);  // set timeout to 30 sec.
 			
-			//System.out.println("Trying to run query : " + query);
+			System.out.println("Trying to run query : " + query);
 			
 			ResultSet rs = null;
-			if(doesReturnResults)
+			if(doesReturnResults){
 				rs = statement.executeQuery(query);
-			else
+			}else
 				statement.executeUpdate(query);
 			
 			return rs;

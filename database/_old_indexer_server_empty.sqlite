@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS "fields";
+CREATE TABLE "fields" ("id" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,"project_id" INTEGER,"columnindex" INTEGER,"title" TEXT,"xcoord" INTEGER DEFAULT (null) ,"width" INTEGER,"helphtml" TEXT,"knowndata" TEXT, FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE);
+DROP TABLE IF EXISTS "images";
+CREATE TABLE "images" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "project_id" INTEGER, "user_id" INTEGER, "file" TEXT, FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE, FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE);
+DROP TABLE IF EXISTS "projects";
+CREATE TABLE "projects" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "title" TEXT, "recordsperimage" INTEGER, "firstycoord" INTEGER, "recordheight" INTEGER);
+DROP TABLE IF EXISTS "records";
+CREATE TABLE "records" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,"image_id" INTEGER,"lineindex" INTEGER, FOREIGN KEY(image_id) REFERENCES images(id) ON DELETE CASCADE);
+DROP TABLE IF EXISTS "users";
+CREATE TABLE "users" ("id" INTEGER PRIMARY KEY  NOT NULL ,"username" STRING DEFAULT (null) ,"password" STRING DEFAULT (null) ,"firstname" STRING DEFAULT (null) ,"lastname" STRING DEFAULT (null) ,"email" STRING DEFAULT (null) ,"indexedrecords" INTEGER);
+DROP TABLE IF EXISTS "values";
+CREATE TABLE "values" ("id" INTEGER, "value" TEXT, "columnindex" INTEGER, "record_id" INTGER, FOREIGN KEY(record_id) REFERENCES records(id) ON DELETE CASCADE);

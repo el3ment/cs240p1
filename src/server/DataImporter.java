@@ -17,6 +17,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.thoughtworks.xstream.io.path.Path;
+
 import framework.Database;
 import model.ProjectModel;
 import model.UserModel;
@@ -63,23 +65,16 @@ public class DataImporter {
 			IOException, 
 			SQLException{
 		
-		extractTo(args[0], Server.getFilesLocation());
+		File xml = new File(args[0]);
 		
-		importXML(findXMLFile(Server.getFilesLocation()));
+		copy(xml.getPath(), Server.getFilesLocation());
+		
+		importXML(xml.getAbsolutePath());
 
 	}
 	
-	private static String findXMLFile(String location) {
-		// loop through files, find xml, return path to file
-		//return "Records.xml";
-		
-		return location + "/Records/Records.xml";
-	}
-
-	public static void extractTo(String zipFilename, String destinationLocation) throws IOException{
-		// extract zip file, save to other location
-		
-		Runtime.getRuntime().exec(String.format("unzip %s -d %s", zipFilename, destinationLocation));
+	public static void copy(String directory, String destinationLocation) throws IOException{
+		Runtime.getRuntime().exec(String.format("cp -r %s %s", directory, destinationLocation));
 	}
 	
 	public static void importXML(String filename)
