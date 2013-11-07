@@ -35,7 +35,7 @@
 	<property name="checkstyle-report-file" location="checkstyle-report.txt"/>
 	
 	<!-- Default values for command-line properties.  Values specified on the command-line will override these. -->
-	<property name="file" value=""/>
+	<property name="file" value="./demo/indexer_data/Records/Records.xml"/>
 	<property name="host" value="localhost"/>
 	<property name="port" value="39640"/>
 

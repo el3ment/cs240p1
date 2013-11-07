@@ -1,5 +1,4 @@
-/shared
-/server
-/framework
 /controller
 /model
+/shared
+/server

@@ -78,7 +78,7 @@ public class Request {
 		public String url;
 		
 		public String toString(){
-			return url;
+			return "<URL>/" + url;
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class Request {
 		public Integer recordHeight;
 		public Integer numRecords;
 		public Integer numFields;
-		public ArrayList<FieldResponse> fields;
+		public ArrayList<FieldResponse> fields = new ArrayList<FieldResponse>();
 		
 		public static class FieldResponse{
 			public Integer fieldId;
@@ -111,22 +111,25 @@ public class Request {
 		public String toString(){
 			String response = batchId + "\n"
 				+ projectId + "\n"
-				+ imageURL + "\n"
+				+ "<URL>/" + imageURL + "\n"
 				+ firstYCoord + "\n"
 				+ recordHeight + "\n"
 				+ numRecords + "\n"
 				+ numFields + "\n";
 			
+			
 			for(int i = 0; i < fields.size(); i++){
+				System.out.println("knownvalues - " + fields.get(i).knownValuesUrl.isEmpty());
 				response += fields.get(i).fieldId + "\n"
 					+ fields.get(i).fieldNum + "\n"
 					+ fields.get(i).fieldTitle + "\n"
-					+ fields.get(i).helpUrl + "\n"
+					+ "<URL>/" + fields.get(i).helpUrl + "\n"
 					+ fields.get(i).xCoord + "\n"
 					+ fields.get(i).pixelWidth + "\n"
 					+ (fields.get(i).knownValuesUrl != null 
-						? fields.get(i).knownValuesUrl + "\n" 
-						: "");
+						&& !fields.get(i).knownValuesUrl.isEmpty()
+							? "<URL>/" + fields.get(i).knownValuesUrl + "\n" 
+							: "");
 			}
 			
 			return response;
@@ -154,7 +157,7 @@ public class Request {
 			for(int i = 0; i < fields.size(); i++){
 				response += fields.get(i).projectId + "\n"
 					+ fields.get(i).fieldId + "\n"
-					+ fields.get(i).title;
+					+ fields.get(i).title + "\n";
 			}
 			
 			return response;
@@ -168,7 +171,7 @@ public class Request {
 		public String fieldValues;
 	}
 	public static class SubmitBatchResponse{
-		public boolean isValid;
+		public boolean isValid = true;
 		
 		public String toString(){
 			return (isValid ? "TRUE" : "FALSE");
@@ -196,7 +199,7 @@ public class Request {
 			String response = "";
 			for(int i = 0; i < results.size(); i++){
 				response += results.get(i).batchId + "\n"
-					+ results.get(i).imageUrl + "\n"
+					+ "<URL>/" + results.get(i).imageUrl + "\n"
 					+ results.get(i).recordNum + "\n"
 					+ results.get(i).fieldId + "\n";
 			}
@@ -235,6 +238,9 @@ public class Request {
 		String response = "";
 		
 		try{
+			if(!port.matches("-?\\d+(\\.\\d+)?"))
+				throw new Exception("Invalid port");
+			
 			HttpURLConnection connection = 
 				(HttpURLConnection) new URL("http", host, Integer.parseInt(port), "/" + method)
 				.openConnection();

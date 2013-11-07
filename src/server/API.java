@@ -122,11 +122,11 @@ public class API {
 	 * @param	password	a string of the password
 	 * @param	projectId	internal id of the project
 	 * @return				URL of the first image in the project
-	 * @throws InvalidInputException 
+	 * @throws Exception 
 	 */
 	public Request.GetSampleImageResponse getSampleImage(
 			Request.GetSampleImageRequest params)
-			throws SQLException, InvalidUsernameOrPasswordException, InvalidInputException{
+			throws Exception{
 		
 		userController.requireLogin(params.username, params.password);
 		Request.GetSampleImageResponse response = new Request.GetSampleImageResponse();
@@ -137,6 +137,8 @@ public class API {
 				Integer.parseInt(params.projectId));
 		if(sampleImage != null){
 			response.url = sampleImage.file;
+		}else{
+			throw new Exception("Invalid project id");
 		}
 		
 		return response;

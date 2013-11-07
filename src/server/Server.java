@@ -1,12 +1,17 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import org.apache.commons.io.IOUtils;
 
 import shared.Request;
 
@@ -51,8 +56,12 @@ public class Server {
             String method = t.getRequestURI().getPath().replaceFirst("/", "");
             
             API api = new API();
-            String response = "";
             String request = "";
+            
+            // If you want to output bytes directly, populate responseBytes
+            // otherwise responseString will be used;
+            byte[] responseBytes = null;
+            String responseString = "";
             
             // Parse request body into a string, to be processed into XML
             int c;
@@ -65,52 +74,58 @@ public class Server {
             // Interpret the result as the appropriate class
             try{
 	            if(method.equals("validateUser")){;
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.validateUser(
 	            			(Request.ValidateUserRequest) xmlStream.fromXML(request)));
 	            	
 	            }else if(method.equals("getProjects")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.getProjects((Request.GetProjectsRequest) xmlStream.fromXML(request)));
 	                
 	            }else if(method.equals("getSampleImage")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.getSampleImage(
 	            			(Request.GetSampleImageRequest) xmlStream.fromXML(request)));
 	                            	
 	            }else if(method.equals("downloadBatch")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.downloadBatch(
 	            			(Request.DownloadBatchRequest) xmlStream.fromXML(request)));
 	                            	
 	            }else if(method.equals("submitBatch")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.submitBatch((Request.SubmitBatchRequest) xmlStream.fromXML(request)));
 	                            	
 	            }else if(method.equals("getFields")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.getFields((Request.GetFieldsRequest) xmlStream.fromXML(request)));
 	                            	
 	            }else if(method.equals("search")){
-	            	response = xmlStream.toXML(
+	            	responseString = xmlStream.toXML(
 	            		api.search((Request.SearchRequest) xmlStream.fromXML(request)));
 	                            	
-	            }else{
+	            }else if(!method.equals("favicon.ico")){
 	            	// Requesting file
-	            	String path = Server.getFilesLocation() + t.getRequestURI().getPath();
-	            	Scanner scanner = new Scanner( new File(path)).useDelimiter("\\A");
-	            	response = scanner.next();
-	            	scanner.close();
+	            	String path = Server.getFilesLocation() + method;
+	            	
+	            	File file = new File(path);
+	            	responseBytes = new byte[(int) file.length()];
+	                DataInputStream dis = new DataInputStream(new FileInputStream(file));
+	                dis.readFully(responseBytes);
+	                dis.close();
 	            }
             }catch(Exception e){
-            	response = xmlStream.toXML(false);
+            	System.out.println(e);
+            	e.printStackTrace();
+            	responseString = xmlStream.toXML(false);
             }
             
             // Send the headers, and the response
-            t.sendResponseHeaders(200, response.length());
+            t.sendResponseHeaders(200, responseString.length());
             OutputStream os = t.getResponseBody();
             
-            os.write(response.getBytes());
+            // If responseBytes is populated, use it - otherwise responseString
+            os.write((responseBytes != null ? responseBytes : responseString.getBytes()));
             os.close();
         }
     }

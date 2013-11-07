@@ -107,9 +107,11 @@ public class UserController extends Controller{
 		
 		this.requireValidPositive(projectId);
 		
-		if(imageModel.findFirstBy("user_id", _currentUser.id + "") == null){
+		if(imageModel.findFirstByClause(
+				"user_id = '" + _currentUser.id + "' AND processed = 'false'") == null){
+			
 			ImageModel.Image image = imageModel.findFirstByClause(
-				  "ifnull(images.user_id, '-1') = '-1' "
+				  "images.user_id = -1 "
 				+ "AND images.project_id = '" + projectId + "'");
 			
 			if(image == null)

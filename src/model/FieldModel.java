@@ -102,6 +102,7 @@ public class FieldModel extends Model<FieldModel.Field>{
 		field.width = Integer.parseInt(genericMap.get("fields_width"));
 		field.helphtml = genericMap.get("fields_helphtml");
 		field.knowndata = genericMap.get("fields_knowndata");
+		field.columnindex = Integer.parseInt(genericMap.get("fields_columnindex"));
 		
 		return field;
 	}

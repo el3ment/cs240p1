@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -67,14 +68,27 @@ public class DataImporter {
 		
 		File xml = new File(args[0]);
 		
-		copy(xml.getPath(), Server.getFilesLocation());
+		copy(xml.getParent(), Server.getFilesLocation());
 		
 		importXML(xml.getAbsolutePath());
 
 	}
 	
 	public static void copy(String directory, String destinationLocation) throws IOException{
-		Runtime.getRuntime().exec(String.format("cp -r %s %s", directory, destinationLocation));
+		deleteFilesIn(destinationLocation);
+		FileUtils.copyDirectory(new File(directory), new File(destinationLocation));
+	}
+	
+	// Recursively delete files
+	public static void deleteFilesIn(String directory){
+		for(File file: new File(directory).listFiles()){
+			if(file.isDirectory()){
+				deleteFilesIn(file.getPath());
+				file.delete();
+			}else{
+				file.delete();
+			}
+		}
 	}
 	
 	public static void importXML(String filename)
