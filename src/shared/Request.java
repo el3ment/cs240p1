@@ -225,7 +225,7 @@ public class Request {
 	 * 
 	 * @return				string response from the server, usually XML
 	 */
-	public static String submitRequest(String host, String port, String method, Object params){
+	public static Object submitRequest(String host, String port, String method, Object params){
 		// make connection
 		String response = "";
 		
@@ -258,9 +258,19 @@ public class Request {
 		        reader.close();
 		    }
 		}catch(Exception e){
-			return "FAIL";
+			return null;
 		}
-	    
-		return response;
+		
+		
+		// Parse xml response into object
+		try{
+			// Parse Response
+			XStream xmlStream = new XStream(new DomDriver());
+			
+			response = response.trim();
+			return xmlStream.fromXML(response.replace("\n\r", "")).toString();
+		}catch(Exception e){
+			return null;
+		}
 	}	
 }
