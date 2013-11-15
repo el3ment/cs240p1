@@ -59,7 +59,8 @@ public class ImageModel extends Model<ImageModel.Image>{
 	public static class Image extends ModelRecord{
 
 		public String file;
-		public Integer user_id;
+		public Integer user_id = -1;
+		public Boolean processed = false;
 		
 		// Parents
 		public Integer project_id;
@@ -104,6 +105,13 @@ public class ImageModel extends Model<ImageModel.Image>{
 		image.id = Integer.parseInt(genericMap.get("images_id"));
 		image.file = genericMap.get("images_file");
 		image.project_id = Integer.parseInt(genericMap.get("images_project_id"));
+		image.processed = Boolean.parseBoolean(genericMap.get("images_processed"));
+		
+		try{
+			image.user_id = Integer.parseInt(genericMap.get("images_user_id"));
+		}catch(Exception e){
+			image.user_id = null;
+		}
 		
 		return image;
 	}

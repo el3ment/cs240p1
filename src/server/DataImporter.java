@@ -11,11 +11,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.thoughtworks.xstream.io.path.Path;
 
 import framework.Database;
 import model.ProjectModel;
@@ -63,24 +66,29 @@ public class DataImporter {
 			IOException, 
 			SQLException{
 		
-		String filename = args.length > 0 ? args[0] : "./demo/record-indexer-demo.jar";
-		extractTo(filename, Server.getFilesLocation());
+		File xml = new File(args[0]);
 		
-		importXML(findXMLFile(Server.getFilesLocation()));
+		copy(xml.getParent(), Server.getFilesLocation());
+		
+		importXML(xml.getAbsolutePath());
 
 	}
 	
-	private static String findXMLFile(String location) {
-		// loop through files, find xml, return path to file
-		//return "Records.xml";
-		
-		return location + "/Records/Records.xml";
+	public static void copy(String directory, String destinationLocation) throws IOException{
+		deleteFilesIn(destinationLocation);
+		FileUtils.copyDirectory(new File(directory), new File(destinationLocation));
 	}
-
-	public static void extractTo(String zipFilename, String destinationLocation) throws IOException{
-		// extract zip file, save to other location
-		
-		Runtime.getRuntime().exec(String.format("unzip %s -d %s", zipFilename, destinationLocation));
+	
+	// Recursively delete files
+	public static void deleteFilesIn(String directory){
+		for(File file: new File(directory).listFiles()){
+			if(file.isDirectory()){
+				deleteFilesIn(file.getPath());
+				file.delete();
+			}else{
+				file.delete();
+			}
+		}
 	}
 	
 	public static void importXML(String filename)

@@ -101,8 +101,8 @@ public class ServerUnitTests {
 		try{
 			userController.login("sheila", "parker");
 			assertNotNull("Batch should be assigned, returned null", 
-					userController.assignBatch(6)); 
-			userController.assignBatch(6);
+					userController.assignBatch(1)); 
+			userController.assignBatch(1);
 			fail("Subsequent assignBatch call should throw exception, but does not");
 		}catch(UserController.BatchAlreadyAssignedException e){
 			// This is intended
@@ -137,20 +137,17 @@ public class ServerUnitTests {
 	public void submitBatch() throws SQLException, InvalidInputException{
 		UserModel.User currentUser = userController.login("sheila", "parker");
 		ArrayList<ArrayList<String>> values = imageController.formatBatch(
-			  "Robert, Pottorff, 25, White, 1;"
-				+ "James, Dean, 40, Black, 1;"
-				+ "Robert, Pottorff, 25, White, 1;"
-				+ "James, Dean, 40, Black, 1;"
-				+ "Robert, Pottorff, 25, White, 1;"
-				+ "James, Dean, 40, Black, 1;"
-				+ "Robert, Pottorff, 25, White, 1;"
-				+ "James, Dean, 40, Black, 1;"
-				+ "Robert, Pottorff, 25, White, 1;"
-				+ "James, Dean, 40, Black, 1;");
+			  "Robert, Pottorff, 25, White;"
+				+ "James, Dean, 40, Black;"
+				+ "Robert, Pottorff, 25, White;"
+				+ "James, Dean, 40, Black;"
+				+ "Robert, Pottorff, 25, White;"
+				+ "James, Dean, 40, Black;"
+				+ "Robert, Pottorff, 25, White;");
 		
 		try{
 			assertTrue("SubmitBatch should return true for valid input but does not", 
-				imageController.submitBatch(62, values, currentUser));
+				imageController.submitBatch(50, values, currentUser));
 			//TODO :  look for Robert Pottorff, fail if not found 
 			// 		  (batch returned true but did not add to database)
 			
@@ -159,20 +156,24 @@ public class ServerUnitTests {
 		}
 		
 		try{
-			imageController.submitBatch(-1, values, currentUser);
-			imageController.submitBatch(62, null, currentUser);
-			imageController.submitBatch(62, values, null);
-			imageController.submitBatch(62, imageController.formatBatch("a,b;c,d"), currentUser);
+			imageController.submitBatch(1, null, currentUser);
+			imageController.submitBatch(1, values, null);
+			imageController.submitBatch(1, imageController.formatBatch("a,b;c,d"), currentUser);
 			
 			fail("Uncaught invalid exception for submitBatch");
 		}catch(Controller.InvalidInputException e){ }
+	}
+	
+	@Test (expected=Controller.InvalidInputException.class)
+	public void invalidSubmitBatchImageId() throws SQLException, InvalidInputException{
+		imageController.submitBatch(-1, null, null);
 	}
 	
 	@Test
 	public void getSampleImageForProject(){
 		try{
 			assertEquals(
-				imageController.getSampleImageForProject(6).file, 
+				imageController.getSampleImageForProject(1).file, 
 				"images/1890_image0.png");
 			
 		}catch(Exception e){
@@ -223,7 +224,7 @@ public class ServerUnitTests {
 		
 		try{
 			assertNotNull("Results should be found but returning null", 
-					fieldController.findAllByProjectId(6));
+					fieldController.findAllByProjectId(1));
 			assertNull("No results should be found retuning non-null", 
 					fieldController.findAllByProjectId(999999));			
 		}catch(Exception e){

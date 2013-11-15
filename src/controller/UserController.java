@@ -42,7 +42,7 @@ public class UserController extends Controller{
 		
 		this.requireValidNotEmpty(username);
 		this.requireValidNotEmpty(password);
-		
+		System.out.println("Requesting " + username);
 		UserModel.User foundUser = userModel.findFirstBy("username", username);
 		
 		if(foundUser != null && foundUser.password.equals(password)){
@@ -107,9 +107,11 @@ public class UserController extends Controller{
 		
 		this.requireValidPositive(projectId);
 		
-		if(imageModel.findFirstBy("user_id", _currentUser.id + "") == null){
+		if(imageModel.findFirstByClause(
+				"user_id = '" + _currentUser.id + "' AND processed = 'false'") == null){
+			
 			ImageModel.Image image = imageModel.findFirstByClause(
-				  "ifnull(images.user_id, '-1') = '-1' "
+				  "images.user_id = -1 "
 				+ "AND images.project_id = '" + projectId + "'");
 			
 			if(image == null)

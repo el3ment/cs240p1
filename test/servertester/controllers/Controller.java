@@ -221,7 +221,12 @@ public class Controller implements IController {
 		
 		try{
 			xml = xml.trim();
-			return xmlStream.fromXML(xml.replace("\n\r", "")).toString();
+			Object o = xmlStream.fromXML(xml.replace("\n\r", ""));
+			if(o == false){
+				return "FAILED";
+			}else{
+				return o.toString().replaceAll("<URL>", "http://" + getView().getHost() + ":" + getView().getPort());
+			}
 		}catch(Exception e){
 			return "FAILED";
 		}

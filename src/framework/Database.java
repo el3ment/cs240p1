@@ -60,15 +60,19 @@ public class Database {
 						"jdbc:sqlite:./database/indexer_server.sqlite");
 			
 			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30);  // set timeout to 30 sec.
+			//statement.setQueryTimeout(30);  // set timeout to 30 sec.
 			
-			//System.out.println("Trying to run query : " + query);
+			System.out.println("Trying to run query : " + query);
 			
 			ResultSet rs = null;
-			if(doesReturnResults)
+			if(doesReturnResults){
 				rs = statement.executeQuery(query);
-			else
+			}else{
+				connection.setAutoCommit(false);
 				statement.executeUpdate(query);
+				connection.commit();
+				connection.setAutoCommit(true);
+			}
 			
 			return rs;
 			

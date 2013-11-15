@@ -48,67 +48,74 @@ public class ImageController extends Controller{
 	 * Verifies, then saves a batch assignment for a project.
 	 * 
 	 * @param	batchId		the id of an image
-	 * @param	values		a 2d array of fields and values
+	 * @param	records		a 2d array of fields and values
 	 * @return				true if successful, or throws an exception
 	 * @throws InvalidInputException 
 	 */
 	public boolean submitBatch(int batchId,
-			ArrayList<ArrayList<String>> values, UserModel.User currentUser) 
+			ArrayList<ArrayList<String>> records, UserModel.User currentUser) 
 			throws SQLException, InvalidInputException{
 		
 		this.requireValidPositive(batchId);
-		this.requireNonNull(values);
+		this.requireNonNull(records);
 		this.requireNonNull(currentUser);
 		
 		ImageModel.Image image = imageModel.find(batchId);
 		
-		if(image != null){
+		if(image != null && image.user_id == currentUser.id && !image.processed){
 			ProjectModel.Project project = projectModel.find(image.project_id);
 			FieldModel.ResultList fields = fieldModel.findAllBy("project_id", project.id + "");
-			if(project != null && values.size() == project.recordsperimage
-					&& values.get(0) != null && fields.size() == values.get(0).size()){
+			
+			if(project != null && records.size() == project.recordsperimage
+					&& records.get(0) != null && fields.size() == records.get(0).size()){
 				
-				for(int i = 0; i < values.size(); i++){
+				for(int i = 0; i < records.size(); i++){
 					RecordModel.Record rec = new RecordModel.Record();
 					rec.lineindex = i;
 					rec.image_id = batchId;
 					int id = RecordModel.getInstance().save(rec);
-					for(int j = 0; j < values.get(i).size(); j++){
+					for(int j = 0; j < records.get(i).size(); j++){
 						ValueModel.Value val = new ValueModel.Value();
 						val.columnindex = j;
 						val.record_id = id;
-						val.value = values.get(i).get(j);
+						val.value = records.get(i).get(j);
 						
 						ValueModel.getInstance().save(val);
 					}
 					
 				}
 				
-				imageModel.updateField(image, "user_id", null);
-				userModel.updateField(currentUser, 
-						"indexedrecords", 
-						(currentUser.indexedrecords == null 
-							? 0 
-							: currentUser.indexedrecords) + values.get(0).size() + "");
+				currentUser.indexedrecords = 
+						(currentUser.indexedrecords == null ? 0 
+							: currentUser.indexedrecords) + records.size();
+				
+				imageModel.updateField(image, "processed", "true");
+				userModel.updateField(currentUser, "indexedrecords", 
+						currentUser.indexedrecords + "");
 				
 				return true;
 			}
 			
-			if(project.recordsperimage != values.size()) {
+			if(project.recordsperimage != records.size()) {
 				throw new InvalidInputException("Did not pass enough records (" 
-						+ values.size() + " of " + project.recordsperimage + ")");
-			} else if(values.get(0) == null || fields.size() != values.get(0).size()) {
+						+ records.size() + " of " + project.recordsperimage + ")");
+			}else if(records.get(0) == null || fields.size() != records.get(0).size()) {
 				throw new InvalidInputException
-					("Did not pass enough fields (" + (values.get(0) != null 
-						? values.get(0).size() 
+					("Did not pass enough fields (" + (records.get(0) != null 
+						? records.get(0).size() 
 						: "null") + " of " + fields.size() + ")");
-			} else {
+			}else{
 				// This should be impossible with foreign key checking in database
 				throw new InvalidInputException("Invalid project from image record");
 			}
 		}
 		
-		throw new InvalidInputException("Invalid image id " + batchId);
+		if(image != null && currentUser.id != image.user_id)
+			throw new InvalidInputException("User does not own batch " + currentUser.id + " - " + image.user_id);
+		else if(image.processed)
+			throw new InvalidInputException("Batch already processed");
+		else
+			throw new InvalidInputException("Invalid image id " + batchId );
 	}
 	
 	public ArrayList<ArrayList<String>> formatBatch(String input) throws InvalidInputException{

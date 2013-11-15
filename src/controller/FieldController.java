@@ -8,7 +8,10 @@ import server.API.NoResultsFoundException;
 import shared.Request;
 import framework.Controller;
 import framework.Database;
+import framework.Model;
+import framework.Model.ResultList;
 import model.FieldModel;
+import model.ProjectModel;
 
 /**
  * The controller for Field logic.
@@ -29,7 +32,10 @@ public class FieldController extends Controller{
 			throws SQLException, InvalidInputException{
 		this.requireValidPositive(projectId);
 		
-		return fieldModel.findAllBy("fields_project_id", projectId+"");
+		if(ProjectModel.getInstance().find(projectId) != null)
+			return fieldModel.findAllBy("fields_project_id", projectId+"");
+		else
+			throw new InvalidInputException("Project ID is not valid");
 	}
 	
 	public ArrayList<Request.SearchResponse.SearchResult> 
@@ -38,16 +44,18 @@ public class FieldController extends Controller{
 		
 		this.requireValidNotEmpty(fields);
 		this.requireValidNotEmpty(values);
-		this.requireEquals(fields.split(", *").length % 2, 1); // valid comma structure
-		this.requireEquals(values.split(", *").length % 2, 1); // valid comma structure
 		this.requireValidNumeric(fields.replaceAll(", *", "")); // fields is numeric
 		
 		ArrayList<Request.SearchResponse.SearchResult> results =
 				new ArrayList<Request.SearchResponse.SearchResult>();
 		
-		String fieldClause = "fields.title = \"" + 
-				fields.replaceAll(", *", "\" OR fields.id = \"")
-				+ "\"";
+		String fieldClause = "";
+		
+		if(!fields.equals("-1"))
+			fieldClause = "fields.id = \"" + 
+					fields.replaceAll(", *", "\" OR fields.id = \"")
+					+ "\"";
+		
 		String valueClause = "UPPER('values'.value) = \"" + 
 				values.toUpperCase().replaceAll(", *", "\" OR UPPER('values'.value) = \"")
 				+ "\"";
