@@ -60,7 +60,7 @@ public class API {
 		Request.ValidateUserResponse response = new Request.ValidateUserResponse();
 		
 		if(user == null || user.username.isEmpty())
-			response.isValid = false;
+			return null;
 		else{
 			response.isValid = true;
 			response.firstName = user.firstname;
@@ -223,7 +223,7 @@ public class API {
 
 		FieldModel.ResultList fields;
 		
-		if(params.projectId.isEmpty())
+		if(params.projectId.isEmpty() || params.projectId.equals("-1"))
 			fields = fieldController.fieldModel.findAll();
 		else
 			fields = fieldController.findAllByProjectId(Integer.parseInt(params.projectId));
@@ -303,9 +303,10 @@ public class API {
 		
 		Request.SearchResponse response = new Request.SearchResponse();
 		
-		for(int i = 0; i < results.size(); i++){
-			response.results.add(results.get(i));
-		}
+		if(results != null)
+			for(int i = 0; i < results.size(); i++){
+				response.results.add(results.get(i));
+			}
 		
 		return response;
 		

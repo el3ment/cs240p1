@@ -55,6 +55,8 @@ public class FieldController extends Controller{
 			fieldClause = "fields.id = \"" + 
 					fields.replaceAll(", *", "\" OR fields.id = \"")
 					+ "\"";
+		else
+			fieldClause = "1 = 1";
 		
 		String valueClause = "UPPER('values'.value) = \"" + 
 				values.toUpperCase().replaceAll(", *", "\" OR UPPER('values'.value) = \"")

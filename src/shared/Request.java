@@ -52,6 +52,10 @@ public class Request {
 		public static class ProjectResponse{
 			public Integer projectId;
 			public String title;
+			
+			public String toString(){
+				return (projectId > 0 ? projectId + " - " : "") + title;
+			}
 		}
 		
 		public String toString(){
@@ -141,6 +145,10 @@ public class Request {
 			public Integer projectId;
 			public Integer fieldId;
 			public String title;
+			
+			public String toString(){
+				return (fieldId > 0 ? fieldId + " - " : "") + title;
+			}
 		}
 		
 		public String toString(){
@@ -185,6 +193,10 @@ public class Request {
 			public String imageUrl;
 			public String recordNum;
 			public String fieldId;
+			
+			public String toString(){
+				return batchId + " - " + imageUrl;
+			}
 		}
 		
 		public String toString(){
@@ -261,14 +273,10 @@ public class Request {
 			return null;
 		}
 		
-		
-		// Parse xml response into object
 		try{
-			// Parse Response
 			XStream xmlStream = new XStream(new DomDriver());
-			
 			response = response.trim();
-			return xmlStream.fromXML(response.replace("\n\r", "")).toString();
+			return xmlStream.fromXML(response.replace("\n\r", ""));
 		}catch(Exception e){
 			return null;
 		}

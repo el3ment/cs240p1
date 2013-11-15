@@ -22,7 +22,11 @@ public class Controller {
 		eventName = "on" + StringUtils.capitalize(eventName);
 		
 		for(Object handler : _eventListeners){
+			
+			//System.out.println((_eventListeners.indexOf(handler) + 1) + " / " + _eventListeners.size() + " " + eventName + " in " + handler.getClass().getCanonicalName());
+			
 			try {
+				@SuppressWarnings("rawtypes")
 				Class[] signature;
 				
 				if(params != null){
@@ -46,7 +50,11 @@ public class Controller {
 				}
 				
 			} catch (Exception e) {
-				System.err.println(handler.getClass().getName() + " does not have a method with proper signature for " + eventName);
+				if(params != null)
+					System.err.println(handler.getClass().getName() + " does not have a method with proper signature for " + eventName + "(" + this.getClass().getName() + ", " + params.getClass().getName() + ")");
+				else
+					System.err.println(handler.getClass().getName() + " does not have a method with proper signature for " + eventName + "(" + this.getClass().getName() + ")");
+				continue;
 			} 
 		}
 	}
@@ -61,9 +69,9 @@ public class Controller {
 		
 		Object response = Request.submitRequest(hostname, port, method, request);
 		
-		if(response != null)
+		if(response != null && !response.getClass().getName().equals("java.lang.Boolean"))
 			this.fireEvent(method + "Success", response);
 		else
-			this.fireEvent(method + "Failure", response);
+			this.fireEvent(method + "Failure", null);
 	}
 }

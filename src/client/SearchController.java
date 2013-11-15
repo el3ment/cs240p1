@@ -19,7 +19,9 @@ public class SearchController extends Controller {
 		request.password = (String) AppState.get().get("password");
 		request.projectId = projectId + "";
 		
-		this.submitRequest("loadFields", request);
+		System.out.println(projectId);
+		
+		this.submitRequest("getFields", request);
 	}
 	
 	public void getAllProjects(){
