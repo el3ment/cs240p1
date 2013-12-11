@@ -77,7 +77,7 @@
 
 	<target name="compile" depends="init" description="compile the source code">
 		<javac srcdir="${src}" classpathref="lib-classpath" destdir="${build}" debug="true" includeantruntime="true" />
-		<javac srcdir="${test}" classpathref="lib-classpath" destdir="${build}" debug="true" includeantruntime="true" />
+		<!--<javac srcdir="${test}" classpathref="lib-classpath" destdir="${build}" debug="true" includeantruntime="true" />-->
 	</target>
 	
 	<!-- ant import -Dfile=<INDEXER_DATA_XML_FILE> -->
@@ -156,7 +156,7 @@
 	<!-- If host and/or port number are omitted, default values are used. -->
 	<!-- EXAMPLE: ant client -->
 	<target name="client" depends="compile" description="run client using server on specified host and port">
-				<java classname="THE NAME OF YOUR CLIENT CLASS GOES HERE" fork="yes">
+				<java classname="client.GUI" fork="yes">
 			<classpath>
 				<path refid="all-classpath"/>
 			</classpath>
@@ -169,7 +169,7 @@
 	</target>
 	
 	<target name="client-tests" depends="compile" description="run automated client tests">
-		<java classname="client.ClientUnitTests" fork="yes">
+		<java classname="client.tests.ClientUnitTests" fork="yes">
 			<classpath>
 				<path refid="all-classpath"/>
 			</classpath>

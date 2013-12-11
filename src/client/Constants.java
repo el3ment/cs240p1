@@ -1,9 +1,9 @@
 package client;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 public class Constants {
-
+	
 	public static final int HSPACING = 5;
 	public static final int VSPACING = 5;
 	
@@ -16,6 +16,5 @@ public class Constants {
 	public static final Dimension DOUBLE_VSPACE = new Dimension(0, VSPACING * 2);
 	public static final Dimension TRIPLE_VSPACE = new Dimension(0, VSPACING * 3);
 	public static final Dimension MAX_VSPACE = new Dimension(0, 10000);
-
+	
 }
-

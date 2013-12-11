@@ -95,7 +95,7 @@ public class Request {
 		public Integer recordHeight;
 		public Integer numRecords;
 		public Integer numFields;
-		public ArrayList<FieldResponse> fields;
+		public ArrayList<FieldResponse> fields = new ArrayList<FieldResponse>();
 		
 		public static class FieldResponse{
 			public Integer fieldId;
