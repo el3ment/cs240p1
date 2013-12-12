@@ -4,5 +4,5 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class ImageNavigatorPanel extends JPanel{
-	// drag and whatnot
+	// To be implemented if I have time!
 }

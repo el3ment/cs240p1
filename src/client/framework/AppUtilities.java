@@ -10,7 +10,10 @@ import javax.swing.JLabel;
 
 import client.AppState;
 
+// Handy functions for the app
 public class AppUtilities {
+	
+	// Returns a JLabel with a photo in it - used by getSampleImage
 	public static JLabel createImageLabel(String fragment, int width, int height){
 		
 		String url = urlFromFragment(fragment);
@@ -28,6 +31,7 @@ public class AppUtilities {
 		return null;
 	}
 	
+	// Appends the current server hostname and port to the partial urls
 	public static String urlFromFragment(String fragment){
 		return "http://" + AppState.get().get("hostname") + ":" + AppState.get().get("port") + "/" + fragment;
 	}

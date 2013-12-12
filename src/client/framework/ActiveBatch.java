@@ -1,39 +1,35 @@
 package client.framework;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
-
-import client.quality.Dictionary;
 import client.quality.SpellCorrector;
 import shared.Request;
 
+// Active Batch holds all the data for the current batch -- it's generally 
+// called _model in the components
 @SuppressWarnings("serial")
 public class ActiveBatch{
-	private ArrayList<Record> _records = new ArrayList<Record>();
-	transient private int _activeRow = -1;
-	transient private int _activeColumn = -1;
 	
+	private ArrayList<Record> _records = new ArrayList<Record>();
+
 	public String imageUrl;
 	public Integer batchId;
 	public Integer recordHeight;
 	public Integer firstYCoord;
 	
+	transient ActiveBatch _parent = this;
 	transient private ListModel listModel;
 	transient private TableModel tableModel;
-	
+	transient private int _activeRow = -1;
+	transient private int _activeColumn = -1;
 	transient private boolean[][] _invalidCells;
+	
 	HashMap<Integer, SpellCorrector> _dictionaries = new HashMap<Integer, SpellCorrector>();
-	transient ActiveBatch _parent = this;
 	 
-	// Initialize transient variables
+	// Initialize transient variables when deserializing
 	private Object readResolve() {
 		_activeRow = 1;
 	    _activeColumn = 1;
@@ -41,7 +37,8 @@ public class ActiveBatch{
 	    _parent = this;
 		return this;
 	}
-			
+	
+	// Create an active batch from a downloadBatch response
 	public ActiveBatch(Request.DownloadBatchResponse downloadBatch){
 		
 		imageUrl = downloadBatch.imageURL;
@@ -55,35 +52,39 @@ public class ActiveBatch{
 			record.fields = downloadBatch.fields;
 			record.values = new ArrayList<String>();
 			for(int j = 0; j < downloadBatch.numFields; j++){
+				// Initialize the values to empty strings
 				record.values.add("");
 			}
 
 			_records.add(record);
 		}
 		
-		// Load suggestions
+		// Load suggestions from known values text files
 		for(int j = 0; j < downloadBatch.numFields; j++){
 			if(!downloadBatch.fields.get(j).knownValuesUrl.equals("")){
 				_dictionaries.put(j, new SpellCorrector(AppUtilities.urlFromFragment(downloadBatch.fields.get(j).knownValuesUrl)));
 			}
 		}
 		
-		// Initialize invalid cells
+		// Initialize invalid cells - has to be done after records have been
+		// loaded so we know how many rows and columns
 		_invalidCells = new boolean[this.getRowCount()][this.getColumnCount()];
 		
 	}
 
+	// Simple record holder
 	public class Record{
 		public int id;
 		public ArrayList<Request.DownloadBatchResponse.FieldResponse> fields;
 		public ArrayList<String> values;
 		
+		// This is what is displayed by the form list
 		public String toString(){
 			return "" + id;
 		}
 	}
 	
-	
+	// Updates the _invalidCells array
 	public void determineValidCell(int row, int column){
 		if(column > 0){
 			String value = (String) this.getValueAt(row, column);
@@ -96,10 +97,12 @@ public class ActiveBatch{
 		}
 	}
 	
+	// Returns the corrosponding _invalidCells value - says if a cell is invalid or not
 	public boolean isValidCell(int row, int column){
 		return !_invalidCells[row][column];
 	}
 	
+	// The active cell packaged in one unit
 	public static class SelectedCell{
 		public int row;
 		public int column;
@@ -109,6 +112,7 @@ public class ActiveBatch{
 		}
 	}
 	
+	// A handy interpretation of activeBatch as a list model
 	public class ListModel extends DefaultListModel<Record>{
 		@Override
 		public int getSize() {
@@ -121,6 +125,10 @@ public class ActiveBatch{
 		}
 	}
 
+	// A handy interpretation of activeBatch as a table model
+	// as the data is naturally 2d like a table - most of the actual
+	// code is here and the public methods on active batch
+	// just call these functions as a pass-through
 	public class TableModel extends AbstractTableModel{
 
 		@Override
@@ -148,18 +156,24 @@ public class ActiveBatch{
 		public void setValueAt(Object value, int rowIndex, int columnIndex){
 			if(columnIndex > 0){
 				_records.get(rowIndex).values.set(columnIndex - 1, (String) value);
+				
+				// Update the invalidCell array
 				determineValidCell(rowIndex, columnIndex);
+				
+				// Tell everyone it's been updated
 				GlobalEventManager.getInstance().fireEvent(_parent, "recordUpdated", new SelectedCell(rowIndex, columnIndex));
 			}
 		}
 		
 		@Override
 	    public boolean isCellEditable(int row, int column) {
+			// Everything is editable except Row Number
 		    return column != 0;
 		}
 		
 		@Override
 		public String getColumnName(int columnIndex) {
+			// Call the first column Row Number
 			if(columnIndex == 0)
 				return "Row Number";
 			else
@@ -167,12 +181,15 @@ public class ActiveBatch{
 		}
 	}
 	
+	// Gets the pixel width for a field - used by ImageWindow for drawing highlights
 	public int getFieldWidth(int columnIndex){
 		if(columnIndex == 0)
 			return 0;
 		else
 			return _records.get(0).fields.get(columnIndex - 1).pixelWidth;
 	}
+	
+	// Gets the xcoord of a cell - also used by ImageWindow to draw highlights
 	public int getXCoord(int columnIndex){
 		if(columnIndex == 0)
 			return 0;
@@ -180,8 +197,10 @@ public class ActiveBatch{
 			return _records.get(0).fields.get(columnIndex - 1).xCoord;
 	}
 	
+	// Sets the active cell 
 	public void setActiveCell(int rowIndex, int columnIndex){
 		
+		// Double check everything is on the up-and-up with the indexes
 		if((_activeRow != rowIndex || _activeColumn != columnIndex) && (columnIndex > -1 && rowIndex > -1)){
 			_activeRow = rowIndex;
 			_activeColumn = columnIndex;
@@ -189,6 +208,7 @@ public class ActiveBatch{
 		}
 	}
 	
+	// Just update the row
 	public void setActiveRow(int rowIndex){
 		if(_activeRow != rowIndex && rowIndex > -1){
 			_activeRow = rowIndex;
@@ -198,7 +218,9 @@ public class ActiveBatch{
 		}
 	}
 	
+	// Just update the column
 	public void setActiveColumn(int columnIndex){
+		
 		if(_activeColumn != columnIndex && columnIndex > -1){
 			_activeColumn = columnIndex;
 			if(_activeRow == -1)
@@ -207,11 +229,14 @@ public class ActiveBatch{
 		}
 	}
 	
+	//  Returns a single object representation of the active row and column
 	public SelectedCell getActiveCell(){
 		return new SelectedCell(_activeRow, _activeColumn);
 	}
 	
+	// Gets the field for the active column
 	public Request.DownloadBatchResponse.FieldResponse getActiveField(){
+		// If it's valid and not Row Id
 		if(_isValidRow(_activeRow) && _isValidColumn(_activeColumn) && _activeColumn != 0)
 			return _records.get(_activeRow).fields.get(_activeColumn - 1);
 		else
@@ -226,6 +251,7 @@ public class ActiveBatch{
 		return column < this.getColumnCount() && column >= 0;
 	}
 
+	// Simple pass-through for methods that are useful
 	public int getRowCount() {
 		return this.getTableModel().getRowCount();
 	}
@@ -246,16 +272,19 @@ public class ActiveBatch{
 	    return this.getTableModel().getColumnName(columnIndex);
 	}
 	
+	// Creates if needed, then returns a list model
 	public ListModel getListModel(){
 		listModel = listModel == null ? new ListModel() : listModel;
 		return listModel;
 	}
 	
+	// Creates if needed, then returns a table model
 	public TableModel getTableModel(){
 		tableModel = tableModel == null ? new TableModel() : tableModel;
 		return tableModel;
 	}
 
+	// Returns the suggestion list for a given cell - used by SuggestionWindow
 	public HashSet<String> getSuggestionList(int row, int column) {
 		String word = (String) this.getValueAt(row, column);
 		return _dictionaries.get(column - 1).getSuggestedWords(word);

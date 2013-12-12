@@ -1,5 +1,6 @@
 package client.framework;
 
+// A simple class that allows controllers to "extend" the event manager
 public class EventController {
 	
 	GlobalEventManager eventManager = GlobalEventManager.getInstance();

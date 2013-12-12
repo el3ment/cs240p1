@@ -54,6 +54,7 @@ public class AppWindow implements PropertyChangeListener, ComponentListener, Cha
 			}
 		});
 		
+		// Logout main menu option
 		JMenuItem mntmLogout = new JMenuItem("Logout");
 		mnNewMenu.add(mntmLogout);
 		mntmLogout.addActionListener(new ActionListener() {
@@ -63,6 +64,7 @@ public class AppWindow implements PropertyChangeListener, ComponentListener, Cha
 			}
 		});
 		
+		// Exit main menu option
 		JMenuItem exitButton = new JMenuItem("Exit");
 		mnNewMenu.add(exitButton);
 		exitButton.addActionListener(new ActionListener() {
@@ -246,6 +248,7 @@ public class AppWindow implements PropertyChangeListener, ComponentListener, Cha
 	@Override public void componentShown(ComponentEvent e) { }
 	@Override public void componentHidden(ComponentEvent e) { }
 
+	// When a tab is changed on a JTabbedPane
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		GlobalEventManager.getInstance().fireEvent(this, "windowFocusChanged");

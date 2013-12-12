@@ -1,5 +1,7 @@
 package client.quality;
 
+// Comes from Project 2's Spell Checker
+// Aside from some minor changes - I didn't modify it, or add extra comments.
 public class Dictionary{
 	
 	public class Node{

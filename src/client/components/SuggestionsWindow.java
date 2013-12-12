@@ -44,27 +44,31 @@ public class SuggestionsWindow {
 	JPopupMenu _popup;
 	
 	public SuggestionsWindow(int row, int column){
+		
+		// Set variables used to set the suggestion after finish
 		_row = row;
 		_column = column;
 		_model = (ActiveBatch) AppState.get().get("activeBatch");
 		
+		// Create the dialog
 		_frame = new JDialog();
 		_frame.setModal(true);
 		_frame.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
 		_frame.setAlwaysOnTop(true);
-		
 		_frame.setTitle("Use Suggestions");
 		_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		_frame.getContentPane().setLayout(new BorderLayout());
 		
+		// Create a content-holding panel and scrollpane for list
 		JPanel container = new JPanel();
-		
 		JScrollPane listContainer = new JScrollPane();
 		container.add(listContainer);
 		
+		// Create a list
 		_list = new SuggestionList(_model.getSuggestionList(row, column));
 		listContainer.setViewportView(_list.getList());
 		
+		// Add a use button
 		_useSuggestion = new JButton("Use");
 		_useSuggestion.setActionCommand("Use Suggestion");
 		container.add(_useSuggestion);
@@ -76,6 +80,7 @@ public class SuggestionsWindow {
 			}
 		});
 		
+		// Add the overall container (has both list and buttons)
 		_frame.add(container);
 		
 		_frame.setMinimumSize(new Dimension(300, 100));
@@ -85,6 +90,7 @@ public class SuggestionsWindow {
 		_frame.setLocationRelativeTo(null);
 	}
 	
+	// When the use button has been pressed
 	public void finish(String selectedWord){
 		_model.setValueAt(selectedWord, _row, _column);
 		_frame.dispose();
@@ -94,6 +100,8 @@ public class SuggestionsWindow {
 		_frame.setVisible(true);
 	}
 	
+	// Shows the popup
+	// Called by the right click event listeners on different components
 	public void showPopup(Component component, Point location){
 
 		_popup = new JPopupMenu();
@@ -109,9 +117,11 @@ public class SuggestionsWindow {
 			}
 		});
 		
+		// Using .show not .setVisible to avoid really buggy behavior
 		_popup.show(component, location.x, location.y);
 	}
 	
+	// A custom "list" for suggestions
 	public class SuggestionList implements ListSelectionListener{
 		
 		JList _list;
@@ -131,8 +141,10 @@ public class SuggestionsWindow {
 			return (String) _list.getSelectedValue();
 		}
 
+		// When an option is selected
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
+			// Enable the use button
 			_useSuggestion.setEnabled(true);
 		}
 	}

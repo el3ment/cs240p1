@@ -178,8 +178,7 @@ public class FormInputPanel extends JPanel implements ListSelectionListener, Foc
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		int selected = _list.getSelectedIndex();
-	    int previous = selected == e.getFirstIndex() ? e.getLastIndex() : e.getFirstIndex();
-	    
+
 		_model.setActiveRow(selected);
 	}
 	
@@ -220,7 +219,7 @@ public class FormInputPanel extends JPanel implements ListSelectionListener, Foc
 		_model.setActiveColumn(columnIndex + 1);
 	}
 
-	// When a textbox is unselected - save the data
+	// When a textbox is unselected
 	@Override
 	public void focusLost(FocusEvent e) { }
 	
@@ -230,6 +229,7 @@ public class FormInputPanel extends JPanel implements ListSelectionListener, Foc
 		_populateInputs();
 	}
 	
+	// Fired when the parent JTabbedPane switches tabs
 	public void onWindowFocusChanged(AppWindow window){
 		if(_model != null && _model.getActiveCell().column > 0 && _inputs != null && _inputs.size() > 0)
 			_inputs.get(_model.getActiveCell().column - 1).requestFocus();

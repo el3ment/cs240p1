@@ -1,4 +1,62 @@
 Starting audit...
-/Users/robert/Documents/workspace/Project1/src/controller/ImageController.java:55:5: Cyclomatic Complexity is 13 (max allowed is 10).
-/Users/robert/Documents/workspace/Project1/src/server/Server.java:41:9: Cyclomatic Complexity is 11 (max allowed is 10).
+/users/ugrad/e/el3ment/workspace/Server/src/client/GUI.java:89: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:174: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:186: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:201: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:206: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:229: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:230: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/AppWindow.java:243: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:139: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:153: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:161: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:163: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:164: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:183: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/DownloadBatchWindow.java:192: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/FormInputPanel.java:88: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/FormInputPanel.java:191: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/FormInputPanel.java:234: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/ImageWindowPanel.java:39: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/ImageWindowPanel.java:199: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/ImageWindowPanel.java:225: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/ImageWindowPanel.java:398: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/TableInputPanel.java:42: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/components/TableInputPanel.java:91: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/controller/BatchController.java:39: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/ActiveBatch.java:65: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/ActiveBatch.java:91: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/ActiveBatch.java:164: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/ActiveBatch.java:204: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/AppUtilities.java:36: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/GlobalEventManager.java:53: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/GlobalEventManager.java:73: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/GlobalEventManager.java:74: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/GlobalEventManager.java:77: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/framework/GlobalEventManager.java:79: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/quality/SpellCorrector.java:66: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/quality/SpellCorrector.java:82: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/quality/SpellCorrector.java:120: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/quality/SpellCorrector.java:137: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/client/quality/SpellCorrector.java:155: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/controller/ImageController.java:55:5: Cyclomatic Complexity is 18 (max allowed is 10).
+/users/ugrad/e/el3ment/workspace/Server/src/controller/ImageController.java:114: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/server/Server.java:52:9: Cyclomatic Complexity is 12 (max allowed is 10).
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/Controller.java:26: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/Controller.java:54: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/Controller.java:56: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/LoginController.java:20: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchGUI.java:16: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchGUI.java:17: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:47: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:110: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:135: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:142: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:143: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:157: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:167: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:168: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:192: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:199: Line is longer than 100 characters.
+/users/ugrad/e/el3ment/workspace/Server/src/smallgui/SearchView.java:212: Line is longer than 100 characters.
 Audit done.

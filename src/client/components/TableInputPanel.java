@@ -2,12 +2,8 @@ package client.components;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,6 +17,7 @@ import client.AppState;
 import client.framework.ActiveBatch;
 import client.framework.GlobalEventManager;
 
+// Table input view!
 @SuppressWarnings("serial")
 public class TableInputPanel extends JScrollPane implements ListSelectionListener, MouseListener{
 	
@@ -29,6 +26,7 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 	SuggestionsWindow _suggestionWindow;
 	JPopupMenu _suggestionMenu;
 	
+	// On creation refresh the model, build the view
 	TableInputPanel(){
 		
 		refresh();
@@ -37,6 +35,7 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
         GlobalEventManager.getInstance().addListener(this);
 	}
 	
+	// Called whenever the model changes
 	public void refresh(){
 		_model = (ActiveBatch) AppState.get().get("activeBatch");
 		if(_model != null){
@@ -44,6 +43,7 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 		}
 	}
 	
+	// Builds the actual JTable, scrollpane settings, etc.
 	public void rebuild(){
 		
 		// Clean up a bit
@@ -71,16 +71,20 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 		}
 	}
 	
+	// When activeBatch is updated by AppState
 	public void onActiveBatchChanged(AppState appState, ActiveBatch activeBatch){
 		refresh();
 		rebuild();
 	}
+	
+	// When activeBatch is nullified, generally happens onSubmit of a batch
 	public void onActiveBatchChanged(AppState appState){
 		// Active Batch Nullified
 		refresh();
 		rebuild();
 	}
 	
+	// The renderer handles painting the cells red if they are invalid
 	public class Renderer extends DefaultTableCellRenderer implements TableCellRenderer{
 
 		@Override
@@ -88,7 +92,8 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 			
 			this.setText(value.toString());
 			
-			setBackground(Color.RED);
+			// If invalid, paint it red, if it's selected, paint it blue
+			// otherwise, paint it white
 			if(!_model.isValidCell(row, column))
 				setBackground(Color.RED);
 			else if(hasFocus)
@@ -101,28 +106,28 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 		
 	}
 
+	// When a selection is made (a cell is selected)
 	@Override
 	public void valueChanged(ListSelectionEvent e){
 		_model.setActiveCell(_table.getSelectedRow(), _table.getSelectedColumn());
 	}
 	
+	// Fired by ActiveBatch - this could be another form pushing a cellselection
 	public void onCellSelected(ActiveBatch activeBatch, ActiveBatch.SelectedCell activeCell){
 		refresh();
 	}
 	
+	// When a record is updated outside of a cellSelected - usually by the quality checker
 	public void onRecordUpdated(ActiveBatch activeBatch, String value){
 		refresh();
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
+	// Handles showing the Use Suggestions menu if needed
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
+		// Get the clicked cell
 		int row = _table.rowAtPoint(e.getPoint());
 		int column = _table.columnAtPoint(e.getPoint());
 		
@@ -136,22 +141,12 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 		
 	}
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	// Unused listeners
+	@Override public void mouseReleased(MouseEvent e) { }
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void mouseEntered(MouseEvent e) { }
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void mouseExited(MouseEvent e) { }
 	
+	@Override public void mouseClicked(MouseEvent e) { }
 }

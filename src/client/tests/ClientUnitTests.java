@@ -13,17 +13,12 @@ public class ClientUnitTests {
 	public void teardown() {
 	}
 	
-	
-	
-	
-	// event manager tests
-	// test if true singleton
-	// test if add listener, fireEvent works
-	
-	
-	
-	
-	
+	// Add list of items to a dictionary
+	// test null input
+	// test insertion
+	// test deletion
+	// test transposition
+	// etc
 	
 	@Test
 	public void test_1() {		

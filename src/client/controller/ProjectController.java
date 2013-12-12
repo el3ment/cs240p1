@@ -15,6 +15,7 @@ public class ProjectController extends Controller{
 		
 		Object response = this.submitRequest("getProjects", request);
 		
+		// Handle type checking on response
 		if(response != null && response.getClass().getName() != "java.lang.Boolean")
 			return (Request.GetProjectsResponse) response;
 		else
@@ -30,6 +31,7 @@ public class ProjectController extends Controller{
 		
 		Object response = this.submitRequest("getSampleImage", request);
 		
+		// Check to make sure the response isn't an error
 		if(response != null && response.getClass().getName() != "java.lang.Boolean")
 			return (Request.GetSampleImageResponse) response;
 		else

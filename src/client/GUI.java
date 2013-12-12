@@ -8,6 +8,7 @@ import client.controller.LoginController;
 import client.framework.GlobalEventManager;
 import shared.Request;
 
+// Main class running the entire program
 public class GUI {
 	
 	public static LoginWindow _loginWindow;
@@ -46,6 +47,8 @@ public class GUI {
 	}
 	
 	public static void exit(){
+		
+		// Save on exit
 		AppState.get().save();
 		
 		_loginWindow.close();
@@ -58,6 +61,7 @@ public class GUI {
 	
 	public static void logout(){
 		
+		// Save on logout
 		AppState.get().save();
 		
 		if(_appWindow != null)
@@ -68,6 +72,7 @@ public class GUI {
 		prepAppState();
 	}
 	
+	// A helper function to make a dialog and show an error message
 	public static void globalErrorMessage(String message){
 		JOptionPane.showMessageDialog(null,
 			    message,
@@ -75,8 +80,12 @@ public class GUI {
 			    JOptionPane.ERROR_MESSAGE);
 	}
 	
+	// A simple handler - later in the software we begin
+	// assigning listeners(this) rather than holding classes specific for them
+	// but this was one of the first
 	public static class GlobalEventHandlers{
 		
+		// Fired after a user successfully logs in.
 		public void onValidateUserSuccess(LoginController controller, Request.ValidateUserResponse response){
 			
 			JOptionPane.showMessageDialog(null,
@@ -94,6 +103,7 @@ public class GUI {
 			_appWindow.show();
 		}
 		
+		// Fired if the user can't log in, or the server dosen't respond
 		public void onValidateUserFailure(LoginController controller){
 			GUI.globalErrorMessage("There was an error logging in");
 		}

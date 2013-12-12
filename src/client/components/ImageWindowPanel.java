@@ -163,39 +163,49 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 	    protected void paintComponent(Graphics g){
 	    	if(_image != null){
 		        Graphics2D graphics2d = (Graphics2D) g.create();
+		        
 		        int componentWidth = getWidth();
 		        int componentHeight = getHeight();
+		        
+		        // Paint it grey
 		        graphics2d.setColor(Color.GRAY);
 		        graphics2d.fillRect(0, 0, componentWidth, componentHeight);
-		        //if(b != dr.c) {
-	                
-		        	graphics2d.translate(componentWidth / 2, componentHeight / 2);
-		        	graphics2d.scale(_scale, _scale);
-		        	graphics2d.translate(-_x, -_y);
-		           
-		            int imageXOffset = -_image.getWidth() / 2;
-		            int imageYOffset = -_image.getHeight() / 2;
-		            BufferedImage bufferedimage = _image;
-		           
-		            if(_isInverted)
-		                bufferedimage = INVERT_FILTER.filter(_image, null);
-		            
-		            graphics2d.drawImage(bufferedimage, imageXOffset, imageYOffset, this);
-		            
-		            // Highlights
-		            if(_showHighlights != null && _showHighlights) {
-		                graphics2d.setColor(LIGHT_TEAL);
-		                graphics2d.fillRect(_highlightX + imageXOffset, _highlightY + imageYOffset, _highlightWidth, _highlightHeight);
-		            }
-		            
-		           
-				//}
+	            
+		        // Move it to the center of the component
+	        	graphics2d.translate(componentWidth / 2, componentHeight / 2);
+	        	
+	        	// Scale it
+	        	graphics2d.scale(_scale, _scale);
+	        	
+	        	// Move the origin according to what's been translated by
+	        	// mouse dragging
+	        	graphics2d.translate(-_x, -_y);
+	           
+	            int imageXOffset = -_image.getWidth() / 2;
+	            int imageYOffset = -_image.getHeight() / 2;
+	           
+	            BufferedImage bufferedimage = _image;
+	           
+	            // Invert if nessesary
+	            if(_isInverted)
+	                bufferedimage = INVERT_FILTER.filter(_image, null);
+	            
+	            // Draw the image, moving it to the center
+	            graphics2d.drawImage(bufferedimage, imageXOffset, imageYOffset, this);
+	            
+	            // Highlight the active cell
+	            if(_showHighlights != null && _showHighlights) {
+	                graphics2d.setColor(LIGHT_TEAL);
+	                graphics2d.fillRect(_highlightX + imageXOffset, _highlightY + imageYOffset, _highlightWidth, _highlightHeight);
+	            }
+
 	    	}
 	    	
 	    	
 	    	
 	    } 
 	    
+	    // Called by mouseDragged - moves the image's origin
 		public void translate(Point startOrigin, Point startLocation, int x, int y){
 			
 			// Begin an empty transform to inverseTransform the points we need
@@ -235,6 +245,7 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			
 		}
 		
+		// Converts a point from adjusted to unadjusted coordinates
 		private Point convert(int x, int y){
 	       
 			int newX = x - getWidth() / 2;
@@ -250,6 +261,7 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 	        return new Point(newX, newY);
 		}
 		
+		// Highlights a cell at a given coordinate from the screen
 		public void highlightCellAt(int x, int y){
 			
 			Point p = this.convert(x, y);
@@ -259,11 +271,13 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			int row = 0;
 			int column = 0;
 			
+			// Determine which row it's on
 			for(int i = 0; i < _model.getRowCount(); i++){
 				if(yCorrected > (i * _model.recordHeight + _model.firstYCoord))
 					row = i;
 			}
 			
+			// Determine which column it is
 			int currentXCoord = 0;
 			for(int i = 0; i < _model.getColumnCount(); i++){
 				currentXCoord = _model.getXCoord(i);
@@ -271,29 +285,37 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 					column = i;
 			}
 			
+			// Highlight the cell using (row, column) instead of (x, y)
 			this.highlightCell(row, column);
 			
 		}
-	   
+		
+		// Set the scale!
 	    public void setScale(double scale)  
 	    {  
 	        _scale = scale;
+	        
+	        // Save the scale globally 
 	        AppState.get().put("imageScale", _scale);
+	        
 	        repaint();  
 	    }
 		
+	    // Set the invert
 	    public void setInvert(boolean isInverted){
 	    	_isInverted = isInverted;
 	    	AppState.get().put("imageInverted", isInverted);
 	    	repaint();
 	    }
 	    
+	    // Set weather or not to highlight
 	    public void setHighlight(boolean isHighlighted){
 	    	_showHighlights = isHighlighted;
 	    	AppState.get().put("imageHighlighted", isHighlighted);
 	    	this.repaint();
 	    }
 	    
+	    // Set the source image
 		public void setSource(String url){
 			
 			try {
@@ -304,12 +326,13 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			}
 		}
 		
-		
+		// Clear the source from the component (blank out the image)
 		public void clearSource(){
 			_image = null;
 			this.repaint();
 		}
 		
+		// Toggle inversion
 		public void invert(){
 			this.setInvert(!_isInverted);
 		}
@@ -326,10 +349,12 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			this.setHighlight(!_showHighlights);
 		}
 		
+		// Returns the current origin -- needed by mouseDragged for translate
 		public Point getOrigin(){
 			return new Point((int) _x, (int) _y);
 		}
 		
+		// Highlight a cell at row, column (not (x,y))
 		public void highlightCell(int row, int column){
 			
 			// These should be UNTRASNFORMED!
@@ -347,9 +372,12 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 		
 	}
 
+	// Called when any of the buttons in the menu bar are pressed
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
+		
+		// Switches based string set by setName() called on the button
 	    switch(action){
 		    case "zoomIn":
 		    	_image.zoomIn();
@@ -388,12 +416,14 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 		_image.translate(_dragStartOrigin, _dragStartPosition, e.getX(), e.getY());
 	}
 
+	// After a translate stops, reset
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		_dragStartPosition = null;
 		_dragStartOrigin = null;
 	}
 
+	// When a mouse is clicked, but dosen't start a drag
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(SwingUtilities.isLeftMouseButton(e) && _image.hasImage()){
@@ -403,7 +433,6 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 	}
 
 	
-	// Unused mouse event listeners
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(_dragStartPosition == null){
@@ -411,16 +440,16 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			_dragStartOrigin = _image.getOrigin();
 		}
 	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) { }
-
-	@Override
-	public void mouseExited(MouseEvent e) { }
 	
-	@Override
-	public void mouseMoved(MouseEvent e) { }
+	// Unused mouse listeners
+	@Override public void mouseEntered(MouseEvent e) { }
+
+	@Override public void mouseExited(MouseEvent e) { }
 	
+	@Override public void mouseMoved(MouseEvent e) { }
+	
+	
+	// AppState events called by AppState when .put or .load is called
 	public void onImageScaleChanged(AppState appState, Double scale){
 		_image.setScale(scale);
 	}
@@ -441,7 +470,7 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 		refresh();
 	}
 	
-	// Respond to cell selection
+	// Respond to cell selection - called by ActiveBatch
 	public void onCellSelected(ActiveBatch activeBatch, ActiveBatch.SelectedCell activeCell){
 		if(_image != null && _image.hasImage()){
 			_image.highlightCell(activeCell.row, activeCell.column);

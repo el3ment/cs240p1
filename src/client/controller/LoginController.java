@@ -5,6 +5,7 @@ import shared.Request;
 
 public class LoginController extends Controller{
 	
+	// Logins a user
 	public Request.ValidateUserResponse login(String username, String password){
 		Request.ValidateUserRequest request = new Request.ValidateUserRequest();
 		
@@ -14,6 +15,7 @@ public class LoginController extends Controller{
 		return (Request.ValidateUserResponse) this.submitRequest("validateUser", request);
 	}
 	
+	// Logs out a user - no data is sent to the server
 	public void logout(){
 		this.fireEvent("logout");
 	}

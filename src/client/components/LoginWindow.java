@@ -32,8 +32,8 @@ public class LoginWindow {
 		_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_frame.getContentPane().setLayout(new BorderLayout());
 		
+		// Create the content panel and add it
 		_formPanel = new FormPanel();
-		
 		_frame.getContentPane().add(_formPanel);
 		
 		_frame.setMinimumSize(_frame.getPreferredSize());
@@ -52,6 +52,7 @@ public class LoginWindow {
 		_frame.setVisible(true);
 	}
 	
+	// Reset the panel
 	public void clear(){
 		_formPanel._usernameField.setText("");
 		_formPanel._passwordField.setText("");
@@ -62,8 +63,10 @@ public class LoginWindow {
 		_frame.dispose();
 	}
 	
+	// The content panel, houses the fields and buttons, etc for the window
 	@SuppressWarnings("serial")
 	public class FormPanel extends JPanel{
+		
 		JTextField _hostField;
 		JTextField _portField;
 		JTextField _usernameField;
@@ -75,6 +78,7 @@ public class LoginWindow {
 			
 			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			
+			// Create GridBag variables
 			GridBagLayout gbl_contentPanel = new GridBagLayout();
 			gbl_contentPanel.columnWidths = new int[]{0, 0, 0};
 			gbl_contentPanel.rowHeights = new int[]{0, 0, 0};
@@ -82,6 +86,7 @@ public class LoginWindow {
 			gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 			this.setLayout(gbl_contentPanel);
 			
+			// Username label
 			JLabel lblUsername = new JLabel("Username");
 			GridBagConstraints gbc_lblUsername = new GridBagConstraints();
 			gbc_lblUsername.anchor = GridBagConstraints.EAST;
@@ -90,6 +95,7 @@ public class LoginWindow {
 			gbc_lblUsername.gridy = 0;
 			this.add(lblUsername, gbc_lblUsername);
 
+			// Username field
 			_usernameField = new JTextField();
 			GridBagConstraints gbc_textField = new GridBagConstraints();
 			gbc_textField.insets = new Insets(0, 0, 5, 0);
@@ -99,6 +105,7 @@ public class LoginWindow {
 			this.add(_usernameField, gbc_textField);
 			_usernameField.setColumns(20);
 
+			// Password label
 			JLabel lblPassword = new JLabel("Password");
 			GridBagConstraints gbc_lblPassword = new GridBagConstraints();
 			gbc_lblPassword.anchor = GridBagConstraints.EAST;
@@ -107,6 +114,7 @@ public class LoginWindow {
 			gbc_lblPassword.gridy = 1;
 			this.add(lblPassword, gbc_lblPassword);
 
+			// Password field
 			_passwordField = new JPasswordField();
 			GridBagConstraints gbc_passwordField = new GridBagConstraints();
 			gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
@@ -124,10 +132,12 @@ public class LoginWindow {
 			gbc_buttonPane.gridwidth = 2;
 			this.add(buttonPane, gbc_buttonPane);
 			
+			// Exit
 			JButton exitButton = new JButton("Exit");
 			exitButton.setActionCommand("Exit");
 			buttonPane.add(exitButton);
 			
+			// Login
 			JButton okButton = new JButton("Login");
 			okButton.setActionCommand("Login");
 			buttonPane.add(okButton);
@@ -137,6 +147,7 @@ public class LoginWindow {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					
+					// Store the username and password for subsequent server calls
 					AppState.get().put("username", _usernameField.getText());
 					AppState.get().put("password", _passwordField.getText());
 					
@@ -147,6 +158,7 @@ public class LoginWindow {
 				}
 			});
 			
+			// If exit button is pressed
 			exitButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
