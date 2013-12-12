@@ -41,6 +41,7 @@ public class AppState {
 	}
 	
 	public void save(){
+		
 		// save _map to file
 		XStream xmlStream = new XStream(new DomDriver());
 		try {

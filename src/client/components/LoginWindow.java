@@ -38,6 +38,7 @@ public class LoginWindow {
 		
 		_frame.setMinimumSize(_frame.getPreferredSize());
 		_frame.setMaximumSize(_frame.getPreferredSize());
+		_frame.setResizable(false);
 		_frame.pack();
 		_frame.setLocationRelativeTo(null);
 
@@ -156,6 +157,7 @@ public class LoginWindow {
 			
 		}
 	}
+	
 	
 }
 

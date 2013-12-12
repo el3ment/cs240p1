@@ -6,12 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,19 +20,12 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import shared.Request;
 import client.AppState;
 import client.GUI;
 import client.controller.BatchController;
@@ -45,23 +33,39 @@ import client.framework.ActiveBatch;
 import client.framework.AppUtilities;
 import client.framework.GlobalEventManager;
 
+// Image window panel has one giant image that can pan and zoom
+// as well as highlight cells
 @SuppressWarnings("serial")
 public class ImageWindowPanel extends JPanel implements ActionListener, MouseWheelListener, MouseMotionListener, MouseListener{
 	
-	Image _image = new Image();
+	// Invert image filter
 	private static final RescaleOp INVERT_FILTER = new RescaleOp(-1F, 255F, null);
+	
+	// Highlight color
 	private static final Color LIGHT_TEAL = new Color(0.0F, 0.4F, 1.0F, 0.3F);
+	
+	ImageWindowPanel _panel = this;
 	Point _dragStartPosition;
 	Point _dragStartOrigin;
 	ActiveBatch _model;
 	JButton _submitButton = new JButton("Submit");
+	Image _image = new Image();
 	
 	public ImageWindowPanel(){
 		super();
+		
+		// Set up layout
 		this.setLayout(new BorderLayout());
-		this.add(_buildMenuBar(), BorderLayout.SOUTH);
+		
+		// Build the bar of buttons
+		this.add(_buildMenuBar(), BorderLayout.NORTH);
+		
+		// Add the main image component
 		this.add(_image, BorderLayout.CENTER);
+		
 		this.setPreferredSize(new Dimension(700, 300));
+		
+		// Populate the data from the model
 		refresh();
 		
 		// Set up Global Event Listeners
@@ -108,9 +112,8 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 		_submitButton.addActionListener(this);
 		bar.add(_submitButton);
 		
-		this.addMouseWheelListener(this);
-		this.addMouseMotionListener(this);
-		this.addMouseListener(this);
+		// Set up mouse events
+		
 		
 		return bar;
 	}
@@ -147,7 +150,15 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 			super();
 			this.setBackground(Color.BLACK);
 			this.setSize(new Dimension(100, 100));
+			
+			this.addMouseWheelListener(_panel);
+			this.addMouseMotionListener(_panel);
+			this.addMouseListener(_panel);
 		} 
+		
+		public boolean hasImage(){
+			return _image != null;
+		}
 	   
 	    protected void paintComponent(Graphics g){
 	    	if(_image != null){
@@ -385,7 +396,7 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(SwingUtilities.isLeftMouseButton(e)){
+		if(SwingUtilities.isLeftMouseButton(e) && _image.hasImage()){
 			_image.highlightCellAt(e.getX(), e.getY());
 		}
 
@@ -432,7 +443,9 @@ public class ImageWindowPanel extends JPanel implements ActionListener, MouseWhe
 	
 	// Respond to cell selection
 	public void onCellSelected(ActiveBatch activeBatch, ActiveBatch.SelectedCell activeCell){
-		_image.highlightCell(activeCell.row, activeCell.column);
+		if(_image != null && _image.hasImage()){
+			_image.highlightCell(activeCell.row, activeCell.column);
+		}
 	}
 	
 }

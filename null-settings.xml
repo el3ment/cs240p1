@@ -1,0 +1,10 @@
+<map>
+  <entry>
+    <string>port</string>
+    <string>39640</string>
+  </entry>
+  <entry>
+    <string>hostname</string>
+    <string>localhost</string>
+  </entry>
+</map>

@@ -39,6 +39,9 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 	
 	public void refresh(){
 		_model = (ActiveBatch) AppState.get().get("activeBatch");
+		if(_model != null){
+			_table.changeSelection(_model.getActiveCell().row, _model.getActiveCell().column, false, false);
+		}
 	}
 	
 	public void rebuild(){
@@ -52,20 +55,19 @@ public class TableInputPanel extends JScrollPane implements ListSelectionListene
 			_table = new JTable();
 			_table.setGridColor(Color.black);
 			_table.setDefaultRenderer(Object.class, new Renderer());
-			//_table.setDefaultEditor(Object.class, new Editor());
-	        _table.setRowSelectionAllowed(true);
-	        _table.setColumnSelectionAllowed(true);
 	        _table.setSelectionMode(0);
 	        _table.setModel(_model.getTableModel());
 	        _table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-	        //_table.addMouseListener(new dg(this));
-	        
+	        _table.getTableHeader().setReorderingAllowed(false);
 	        _table.addMouseListener(this);
-	        
 	        _table.getSelectionModel().addListSelectionListener(this);
 	        _table.getColumnModel().getSelectionModel().addListSelectionListener(this);
 	        _table.setPreferredScrollableViewportSize(null);
 	        this.getViewport().add(_table);
+	        _table.changeSelection(0, 1, false, false);
+	        _table.getSelectionModel().setSelectionInterval(1, 1);
+	        _table.setVisible(false);
+	        _table.setVisible(true);
 		}
 	}
 	

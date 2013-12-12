@@ -1,4 +1,7 @@
+/client
 /controller
+/framework
 /model
-/shared
 /server
+/shared
+/smallgui

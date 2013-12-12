@@ -33,9 +33,20 @@ public class GUI {
 		_loginWindow.show();
 
 		GlobalEventManager.getInstance().addListener(new GlobalEventHandlers());
+		
+		Runtime.getRuntime().addShutdownHook(new Thread()
+		{
+		    @Override
+		    public void run()
+		    {
+		        AppState.get().save();
+		    }
+		});
+		
 	}
 	
 	public static void exit(){
+		AppState.get().save();
 		
 		_loginWindow.close();
 		
@@ -46,6 +57,8 @@ public class GUI {
 	}
 	
 	public static void logout(){
+		
+		AppState.get().save();
 		
 		if(_appWindow != null)
 			_appWindow.close();

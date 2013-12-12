@@ -1,7 +1,6 @@
 package client.components;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -12,6 +11,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import client.AppState;
 import client.GUI;
@@ -19,9 +20,9 @@ import client.controller.BatchController;
 import client.framework.ActiveBatch;
 import client.framework.GlobalEventManager;
 import shared.Request;
-import shared.Request.*;
 
-public class AppWindow implements PropertyChangeListener, ComponentListener{
+public class AppWindow implements PropertyChangeListener, ComponentListener, ChangeListener{
+	
 	JFrame _frame;
 	TableInputPanel _tableView;
 	FormInputPanel _formView;
@@ -62,9 +63,9 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 			}
 		});
 		
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mnNewMenu.add(mntmExit);
-		mntmExit.addActionListener(new ActionListener() {
+		JMenuItem exitButton = new JMenuItem("Exit");
+		mnNewMenu.add(exitButton);
+		exitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				GUI.exit();
@@ -82,11 +83,13 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 		_menu = this._buildMenu();
 		_frame.setJMenuBar(_menu);
 		
+		// Set up Vertical Split
 		_verticalSplit = new JSplitPane();
 		_verticalSplit.setName("vertical");
 		_verticalSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		_frame.getContentPane().add(_verticalSplit, BorderLayout.CENTER);
 		
+		// Set up Horizontal Split
 		_horizontalSplit = new JSplitPane();
 		_horizontalSplit.setName("horizontal");
 		_verticalSplit.setRightComponent(_horizontalSplit);
@@ -96,11 +99,14 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 		_horizontalSplit.setResizeWeight(.5d);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addChangeListener(this);
 		_horizontalSplit.setLeftComponent(tabbedPane);
 		
+		// Table View
 		_tableView = new TableInputPanel();
 		tabbedPane.addTab("Table View", null, _tableView, null);
 		
+		// Form Input panel
 		_formView = new FormInputPanel();
 		tabbedPane.addTab("Form View", null, _formView, null);
 		
@@ -111,9 +117,11 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 		_fieldHelp = new FieldHelpPanel();
 		tabbedPane_1.addTab("Field Help", null, new JScrollPane(_fieldHelp), null);
 		
+		// Image Navigator
 		_imageNavigator = new ImageNavigatorPanel();
 		tabbedPane_1.addTab("Image Navigator", null, _imageNavigator, null);
 		
+		// Giant Image
 		_imageWindow = new ImageWindowPanel();
 		_verticalSplit.setLeftComponent(_imageWindow);
 		
@@ -126,28 +134,34 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 		// Set up global event responders
 		GlobalEventManager.getInstance().addListener(this);
 		
+		// Pack and polish up _frame settings
 		_frame.pack();
-		//_frame.setMinimumSize(_frame.getPreferredSize());
 		_frame.setSize(new Dimension(800, 600));
 		_frame.setLocationRelativeTo(null);
 		
 		GlobalEventManager.getInstance().addListener(this);
 		
+		// Set any activeBatch dependent settings
 		refresh();
 	}
 	
+	// Shows the app window, called by GUI
 	public void show(){
 		_frame.setVisible(true);
 	}
 	
+	// hides the app window, unused I think
 	public void hide(){
 		_frame.setVisible(false);
 	}
 	
+	// Closes the app window, called by GUI
 	public void close(){
 		_frame.dispose();
 	}
 	
+	// Called when activeBatch is changed - handles the setting/unsetting of Download Batch
+	// menu item
 	public void refresh(){
 		if(AppState.get().get("activeBatch") != null)
 			_downloadBatchMenuItem.setEnabled(false);
@@ -155,60 +169,85 @@ public class AppWindow implements PropertyChangeListener, ComponentListener{
 			_downloadBatchMenuItem.setEnabled(true);
 	}
 	
+	// Fired by AppState when loading the "activeBatch" property or when another component calls AppState.get().put("activeBatch"); 
 	public void onActiveBatchChanged(AppState appState, ActiveBatch activeBatch){
 		refresh();
 	}
+	
+	// Fired by AppState when the property "activeBatch" is set to null
+	// this happens after a successful batch submit
 	public void onActiveBatchChanged(AppState appState){
 		refresh();
 	}
 	
+	// Fired by BatchController when the server responds with an object
 	public void onSubmitBatchSuccess(BatchController controller, Request.SubmitBatchResponse response){
 		AppState.get().put("activeBatch", null);
 		AppState.get().save();
 	}
+	
+	// Fired by BatchController when the server responds with a "false" or an error
 	public void onSubmitBatchFailure(BatchController controller){
 		GUI.globalErrorMessage("There was an error submitting the batch");
 	}
+	
+	// Fired by AppState when loading settings, or if another component sets "windowPosition
 	public void onWindowPositionChanged(AppState appState, Point position){
 		_frame.setLocation(position);
 	}
 	
+	// Fired by AppState when loading settings, or if another component sets "verticalDividerLocation
 	public void onVerticalDividerLocationChanged(AppState appState, Integer position){
 		_verticalSplit.setDividerLocation(position);
 	}
+	
+	// Fired by AppState when loading settings, or if another component sets "horizontalDividerLocation"
 	public void onHorizontalDividerLocationChanged(AppState appState, Integer position){
 		_horizontalSplit.setDividerLocation(position);
 	}
+	
+	// Fired by AppState when loading settings, or if another component sets "windowHeight"
 	public void onWindowHeightChanged(AppState appState, Integer height){
 		_frame.setSize(_frame.getWidth(), height);
 	}
+	
+	// Fired by AppState when loading settings, or if another component sets "windowWidth"
 	public void onWindowWidthChanged(AppState appState, Integer width){
 		_frame.setSize(width, _frame.getHeight());
 	}
 
+	// Saves window size
 	@Override
 	public void componentResized(ComponentEvent e) { 
 		AppState.get().put("windowHeight", _frame.getHeight());
 		AppState.get().put("windowWidth", _frame.getWidth());
+		
+		// Because we have different weights on the split panes
+		// we force-fire them to get the updated values
 		_verticalSplit.firePropertyChange(JSplitPane.DIVIDER_LOCATION_PROPERTY, 0, _verticalSplit.getDividerLocation());
 		_horizontalSplit.firePropertyChange(JSplitPane.DIVIDER_LOCATION_PROPERTY, 0, _horizontalSplit.getDividerLocation());
 	}
 
+	// Component location event listener
 	@Override
 	public void componentMoved(ComponentEvent e) {
 		AppState.get().put("windowPosition", _frame.getLocation());
 	}
 
-	@Override
-	public void componentShown(ComponentEvent e) { }
-
-	@Override
-	public void componentHidden(ComponentEvent e) { }
-
+	// Divider Location Property Change listener for Vertical and Horizontal split panes
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		String divider = ((JSplitPane) e.getSource()).getName();
+		String divider = ((JSplitPane) e.getSource()).getName(); // "vertical" or "horizontal"
 		AppState.get().put(divider + "DividerLocation", ((JSplitPane) e.getSource()).getDividerLocation());
 		
+	}
+	
+	// Unused Events
+	@Override public void componentShown(ComponentEvent e) { }
+	@Override public void componentHidden(ComponentEvent e) { }
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		GlobalEventManager.getInstance().fireEvent(this, "windowFocusChanged");
 	}
 }

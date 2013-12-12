@@ -35,8 +35,8 @@ public class ActiveBatch{
 	 
 	// Initialize transient variables
 	private Object readResolve() {
-		_activeRow = -1;
-	    _activeColumn = -1;
+		_activeRow = 1;
+	    _activeColumn = 1;
 	    _invalidCells = new boolean[this.getRowCount()][this.getColumnCount()];
 	    _parent = this;
 		return this;

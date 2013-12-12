@@ -3,6 +3,7 @@ package client.components;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,8 +78,9 @@ public class SuggestionsWindow {
 		
 		_frame.add(container);
 		
-		_frame.setMinimumSize(_frame.getPreferredSize());
-		_frame.setMaximumSize(_frame.getPreferredSize());
+		_frame.setMinimumSize(new Dimension(300, 100));
+		_frame.setMaximumSize(new Dimension(300, 100));
+		_frame.setResizable(false);
 		_frame.pack();
 		_frame.setLocationRelativeTo(null);
 	}
@@ -118,6 +120,7 @@ public class SuggestionsWindow {
 			_list = new JList(words.toArray());
 			_list.getSelectionModel().addListSelectionListener(this);
 			_list.setSelectionMode(0);
+			_list.setMinimumSize(new Dimension(100, 100));
 		}
 		
 		public JList getList(){
