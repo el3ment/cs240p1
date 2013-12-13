@@ -33,7 +33,10 @@ public class AppUtilities {
 	
 	// Appends the current server hostname and port to the partial urls
 	public static String urlFromFragment(String fragment){
-		return "http://" + AppState.get().get("hostname") + ":" + AppState.get().get("port") + "/" + fragment;
+		if(fragment.contains("http://") || fragment.contains("https://"))
+			return fragment;
+		else
+			return "http://" + AppState.get().get("hostname") + ":" + AppState.get().get("port") + "/" + fragment;
 	}
 	
 }

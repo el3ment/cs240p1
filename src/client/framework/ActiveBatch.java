@@ -1,10 +1,14 @@
 package client.framework;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
+
 import javax.swing.DefaultListModel;
 import javax.swing.table.AbstractTableModel;
+
 import client.quality.SpellCorrector;
 import shared.Request;
 
@@ -285,7 +289,7 @@ public class ActiveBatch{
 	}
 
 	// Returns the suggestion list for a given cell - used by SuggestionWindow
-	public HashSet<String> getSuggestionList(int row, int column) {
+	public TreeSet<String> getSuggestionList(int row, int column) {
 		String word = (String) this.getValueAt(row, column);
 		return _dictionaries.get(column - 1).getSuggestedWords(word);
 	}

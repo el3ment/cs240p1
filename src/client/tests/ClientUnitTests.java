@@ -1,6 +1,8 @@
 package client.tests;
 
 import org.junit.*;
+
+import client.quality.SpellCorrector;
 import static org.junit.Assert.*;
 
 public class ClientUnitTests {
@@ -9,28 +11,20 @@ public class ClientUnitTests {
 	public void setup() {
 	}
 	
+	@Test
+	public void testClient(){
+		assertTrue(true);
+	}
+	
 	@After
 	public void teardown() {
 	}
 	
-	// Add list of items to a dictionary
-	// test null input
-	// test insertion
-	// test deletion
-	// test transposition
-	// etc
-	
-	@Test
-	public void test_1() {		
-		assertEquals("OK", "OK");
-		assertTrue(true);
-		assertFalse(false);
-	}
-
 	public static void main(String[] args) {
 
 		String[] testClasses = new String[] {
-				"client.ClientUnitTests"
+				"client.tests.ClientUnitTests",
+				"client.tests.QualityCheckerTests"
 		};
 
 		org.junit.runner.JUnitCore.main(testClasses);

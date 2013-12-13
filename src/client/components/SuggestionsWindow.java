@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -126,7 +127,7 @@ public class SuggestionsWindow {
 		
 		JList _list;
 		
-		public SuggestionList(HashSet<String> words){
+		public SuggestionList(TreeSet<String> words){
 			_list = new JList(words.toArray());
 			_list.getSelectionModel().addListSelectionListener(this);
 			_list.setSelectionMode(0);

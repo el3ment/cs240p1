@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 // Comes from Project 2's Spell Checker
 // added getSuggestedWords function and no more - no extra comments were added
@@ -48,11 +49,7 @@ public class SpellCorrector{
 		
 	}
 	
-	public SpellCorrector(String filename){
-		
-		System.out.println("loading " + filename);
-		
-		
+	public SpellCorrector(String filename){	
 		try {
 			this.useDictionary(filename);
 		} catch (IOException e) {
@@ -76,6 +73,10 @@ public class SpellCorrector{
 	}
 
 	public void addWord(String word){
+		
+		if(_dictionary == null)
+			_dictionary = new Dictionary();
+		
 		_dictionary.add(word.toLowerCase());
 	}
 	
@@ -178,8 +179,8 @@ public class SpellCorrector{
 		return _dictionary.exists(word);
 	}
 	
-	public HashSet<String> getSuggestedWords(String word){
-		HashSet<String> responseWords = new HashSet<String>();
+	public TreeSet<String> getSuggestedWords(String word){
+		TreeSet<String> responseWords = new TreeSet<String>();
 		ArrayList<SimilarWord> similarWords;
 		
 		similarWords = this.editDistance(word, 2);
